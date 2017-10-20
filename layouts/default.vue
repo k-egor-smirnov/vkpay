@@ -1,52 +1,52 @@
 <template>
-  <div>
-    <nuxt/>
-    <my-footer/>
-  </div>
+    <div>
+        <nuxt/>
+        <my-footer/>
+    </div>
 </template>
 
 <script>
-import MyFooter from '~/components/Footer.vue'
+  import MyFooter from '~/components/Footer.vue'
 
-export default {
-  components: {
-    MyFooter
+  export default {
+    components: {
+      MyFooter
+    }
   }
-}
 </script>
 
 <style>
-.container
-{
-  margin: 0;
-  width: 100%;
-  padding: 100px 0;
-  text-align: center;
-}
+    @import "https://unpkg.com/spectre.css/dist/spectre.min.css";
+    @import "https://unpkg.com/spectre.css/dist/spectre-exp.min.css";
+    @import "https://unpkg.com/spectre.css/dist/spectre-icons.min.css";
 
-.button, .button:visited
-{
-  display: inline-block;
-  color: black;
-  letter-spacing: 1px;
-  background-color: #fff;
-  border: 2px solid #000;
-  text-decoration: none;
-  text-transform: uppercase;
-  padding: 15px 45px;
-}
+    .container {
+        margin: 0;
+        width: 100%;
+        padding: 100px 0;
+        text-align: center;
+    }
 
-.button:hover, .button:focus
-{
-  color: #fff;
-  background-color: #000;
-}
+    .button, .button:visited {
+        display: inline-block;
+        color: black;
+        letter-spacing: 1px;
+        background-color: #fff;
+        border: 2px solid #000;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: 15px 45px;
+    }
 
-.title
-{
-  color: #000;
-  font-weight: 300;
-  font-size: 2.5em;
-  margin: 0;
-}
+    .button:hover, .button:focus {
+        color: #fff;
+        background-color: #000;
+    }
+
+    .title {
+        color: #000;
+        font-weight: 300;
+        font-size: 2.5em;
+        margin: 0;
+    }
 </style>
