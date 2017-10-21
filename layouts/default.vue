@@ -1,7 +1,6 @@
 <template>
     <div>
         <nuxt/>
-        <my-footer/>
     </div>
 </template>
 
@@ -19,6 +18,7 @@
     @import "https://unpkg.com/spectre.css/dist/spectre.min.css";
     @import "https://unpkg.com/spectre.css/dist/spectre-exp.min.css";
     @import "https://unpkg.com/spectre.css/dist/spectre-icons.min.css";
+    @import "https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.css";
 
     .container {
         margin: 0;
