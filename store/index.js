@@ -6,7 +6,15 @@ Vue.use(Vuex)
 const store = () => new Vuex.Store({
 
   state: {
-    hash: ''
+    hash: '',
+    query: {},
+    items: []
+  },
+
+  mutations: {
+    setQuery (query) {
+      this.state.query = query
+    }
   }
 })
 

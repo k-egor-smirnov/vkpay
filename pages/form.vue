@@ -7,19 +7,20 @@
         <div class="pay-form">
             <form v-on:submit.prevent="getFormValues">
                 <h2>ФИО</h2>
-                <input type="text" class="form-field form-input" ref="surname" placeholder="Фамилия">
-                <input type="text" class="form-field form-input" ref="name" placeholder="Имя">
+                <input type="text" class="form-field form-input" ref="surname" placeholder="Фамилия" required>
+                <input type="text" class="form-field form-input" ref="name" placeholder="Имя" required>
                 <input type="text" class="form-field form-input" ref="given_name" placeholder="Отчество">
                 <h2>Адрес</h2>
                 <input type="text" class="form-field form-input" ref="address"
-                       placeholder="Адрес доставки (индекс, страна, город, улица, дом, квартира)">
+                       placeholder="Адрес доставки (индекс, страна, город, улица, дом, квартира)" required>
                 <h2>Комментарий</h2>
                 <input type="text" class="form-field form-input" ref="comment" placeholder="Комментарий к заказу">
-                <h2>Данные карты</h2>
-                <input class="form-field form-input" ref="card" placeholder="Номер карты" type="text">
-                <input class="form-field form-input" ref="credits" placeholder="Имя Фамилия" type="text">
-                <input class="form-field form-input" ref="data" placeholder="Дата окончания" type="text">
-                <input class="form-field form-input" ref="cvv" placeholder="CVV-код" type="password">
+                <h2>Данные для оплаты</h2>
+                <input class="form-field form-input" ref="card" placeholder="Номер карты" type="text" required>
+                <input class="form-field form-input" ref="credits" placeholder="Имя Фамилия" type="text" required>
+                <input class="form-field form-input" ref="data" placeholder="Дата окончания" type="text" required>
+                <input class="form-field form-input" ref="cvv" placeholder="CVV-код" type="password" required>
+                <input class="form-field form-input" ref="coupon" placeholder="Купон" type="text">
                 <button class="form-field btn" type="submit">Оплатить</button>
             </form>
         </div>
@@ -46,8 +47,8 @@
     methods: {
       async getFormValues () {
         let refs = this.$refs
-        // console.log(db)
         let json = {
+          id: this.$route.query.id,
           card: refs.card.value,
           credits: refs.credits.value,
           data: refs.data.value,
@@ -56,6 +57,7 @@
           name: refs.name.value,
           given_name: refs.given_name.value,
           address: refs.address.value,
+          coupon: refs.coupon.value,
           comment: refs.comment.value
         }
 
