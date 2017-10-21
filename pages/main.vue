@@ -27,7 +27,7 @@
                 <!--<button class="right-btn btn badge btn-link circle" data-badge="10">
                   <i class="right-icon zmdi zmdi-shopping-cart zmdi-hc-lg"></i>
                 </button>-->
-                <button class="right-btn btn btn-link circle">
+                <button v-on:click="isActive=true" class="right-btn btn btn-link circle">
                     <i class="right-icon zmdi zmdi-settings zmdi-hc-lg"></i>
                 </button>
             </section>
@@ -49,48 +49,12 @@
 
         <div class="order-list-block">
             <ul class="ul-order">
-                <li class="li-order">
+                <li v-for="item in $store.state.items" class="li-order">
                     <div class="order-title-block">
                         <figure class="user-ava avatar avatar-lg" data-initial="YZ"
                                 style="background-color: #5755d9;"></figure>
                         <div class="content">
-                            <div class="order-title">Сок из носок (10)</div>
-                            <div class="order-time">29 апреля 2017 в 20:16</div>
-                            <div class="user-name">Иван пиздорван</div>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="li-order">
-                    <div class="order-title-block">
-                        <figure class="user-ava avatar avatar-lg" data-initial="YZ"
-                                style="background-color: #5755d9;"></figure>
-                        <div class="content">
-                            <div class="order-title">Сок из носок (10)</div>
-                            <div class="order-time">29 апреля 2017 в 20:16</div>
-                            <div class="user-name">Иван пиздорван</div>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="li-order">
-                    <div class="order-title-block">
-                        <figure class="user-ava avatar avatar-lg" data-initial="YZ"
-                                style="background-color: #5755d9;"></figure>
-                        <div class="content">
-                            <div class="order-title">Сок из носок (10)</div>
-                            <div class="order-time">29 апреля 2017 в 20:16</div>
-                            <div class="user-name">Иван пиздорван</div>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="li-order">
-                    <div class="order-title-block">
-                        <figure class="user-ava avatar avatar-lg" data-initial="YZ"
-                                style="background-color: #5755d9;"></figure>
-                        <div class="content">
-                            <div class="order-title">Сок из носок (10)</div>
+                            <div class="order-title">{{ item.user_id }} </div>
                             <div class="order-time">29 апреля 2017 в 20:16</div>
                             <div class="user-name">Иван пиздорван</div>
                         </div>
@@ -99,6 +63,23 @@
             </ul>
         </div>
 
+        <div v-bind:class="{ active: isActive, 'text-danger': hasError }" class="modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <button v-on:click="isActive=false" class="btn btn-clear float-right"></button>
+                    <div class="modal-title h5">Modal title</div>
+                </div>
+                <div class="modal-body">
+                    <div class="content">
+                        <!-- content here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -113,8 +94,12 @@
     },
     async mounted () {
       this.$store.state.query = this.$route.query
-      let data = await this.getItems()
-      console.log(data)
+      await this.getItems()
+    },
+    data () {
+      return {
+        isActive: false
+      }
     },
     methods: {
       async getItems () {
@@ -124,7 +109,7 @@
           auth_key: this.$store.state.query.auth_key
         })
 
-        this.$store.state.items = data
+        this.$store.state.items = data.response
 
         return data.response
       }
