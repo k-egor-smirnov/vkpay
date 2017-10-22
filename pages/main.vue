@@ -6,6 +6,7 @@
         VK.init(function () {
           console.log('init success')
           setInterval(function () {
+
             VK.callMethod('resizeWindow', 820, document.body.scrollHeight);
           }, 500)
         }, function () {
@@ -31,7 +32,7 @@
         <!--<button class="right-btn btn badge btn-link circle" data-badge="10">
           <i class="right-icon zmdi zmdi-shopping-cart zmdi-hc-lg"></i>
         </button>-->
-        <button v-on:click="isActive=true" class="right-btn btn btn-link circle">
+        <button v-on:click="isSettingsActive=true" class="right-btn btn btn-link circle">
           <i class="right-icon zmdi zmdi-settings zmdi-hc-lg"></i>
         </button>
       </section>
@@ -54,12 +55,12 @@
 
     <div class="order-list-block">
       <ul class="ul-order">
-        <li v-for="item in $store.state.items" class="li-order">
+        <li v-on:click="isStatusActive=true" v-for="item in $store.state.items" class="li-order">
           <div class="order-title-block">
             <figure class="user-ava avatar avatar-lg" data-initial="YZ"
                     style="background-color: #5755d9;"></figure>
             <div class="content">
-              <div class="order-title">{{ item.user_id }} </div>
+              <div class="order-title">{{ item.product.title }} </div>
               <div class="order-time">{{ item.time }}</div>
               <div class="user-name">{{ item.user.first_name }} {{ item.user.last_name }}</div>
             </div>
@@ -68,13 +69,14 @@
       </ul>
     </div>
 
-    <div v-bind:class="{ active: isActive }" class="modal">
+    <!-- SETTINGS -->
+    <div v-bind:class="{ active: isSettingsActive }" class="modal">
 
-      <div v-on:click="isActive=false" class="modal-overlay"></div>
+      <div v-on:click="isSettingsActive=false" class="modal-overlay"></div>
 
       <div class="modal-container">
         <div class="modal-header">
-          <button v-on:click="isActive=false" class="btn btn-clear float-right"></button>
+          <button v-on:click="isSettingsActive=false" class="btn btn-clear float-right"></button>
           <div class="modal-title h5">Настройки</div>
         </div>
 
@@ -111,7 +113,48 @@
             </div>
           </transition>
         </div>
+      </div>
 
+    </div>
+
+    <!-- CHANGE STATUS -->
+    <div v-bind:class="{ active: isStatusActive }" class="modal">
+
+      <div v-on:click="isStatusActive=false" class="modal-overlay"></div>
+
+      <div class="modal-container">
+        <div class="modal-header">
+          <button v-on:click="isStatusActive=false" class="btn btn-clear float-right"></button>
+          <div class="modal-title h5">Изменить статус заказа</div>
+        </div>
+
+        <div class="modal-body">
+          <div class="content">
+            <form v-on:submit.prevent="saveStatus">
+              <button class="btn btn-primary btn-0-state" type="submit">Созданный / ожидает оплаты</button>
+              <button class="btn btn-primary btn-1-state" type="submit">Оплачено</button>
+              <button class="btn btn-primary btn-2-state" type="submit">Отменён / ошибка</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <transition name="fade">
+            <div v-if="showSuccess" class="toast toast-success">
+              Настройки сохранены.
+            </div>
+          </transition>
+          <transition name="fade">
+            <div v-if="showWarning" class="toast toast-warning">
+              Варнинг, ептыбля ыыыыы)))00)000
+            </div>
+          </transition>
+          <transition name="fade">
+            <div v-if="showError" class="toast toast-error">
+              Ошибка при сохранении настроек. Проверье вводимые данные.
+            </div>
+          </transition>
+        </div>
       </div>
 
     </div>
@@ -137,7 +180,8 @@
     },
     data() {
       return {
-        isActive: false,
+        isSettingsActive: false,
+        isStatusActive: false,
         showSuccess: false,
         showWarning: false,
         showError: false
@@ -154,11 +198,9 @@
         this.$store.state.items = data.response
 
         for (let i in data.response) {
-          var t = new Date(data.response[i].order_time);
-          var formatted = t.format("dd.mm.yyyy hh:MM:ss");
+          var t = new Date(data.response[i].order_time * 1000);
+          data.response[i].time = moment(t).format("DD.MM.YY hh:mm:ss");
         }
-
-        console.log(data.response)
       },
       async getSettings() {
         let {data} = await axios.post('https://vkpayoff.ru/api/admin/get_settings', {
@@ -172,12 +214,14 @@
         this.$store.state.settings = data.settings
       },
       closeModal() {
-        this.isActive = false
+        this.isSettingsActive = false
 
         this.showSuccess = this.showError = false
       },
       async saveSettings() {
         console.log('start sending new settings')
+
+        console.log(e)
 
         let {data} = await axios.post('https://vkpayoff.ru/api/admin/save_settings', {
           url: this.$refs.webhook.value,
@@ -201,6 +245,9 @@
         }
 
         setTimeout(this.closeModal, 1400)
+      },
+      async saveStatus(e) {
+        console.log(e)
       }
     },
     head() {
@@ -216,6 +263,58 @@
 
 <style scoped>
   /** {margin: 0; padding: 0;}*/
+
+  .btn {
+    margin-bottom: 10px;
+  }
+
+  .btn-0-state {
+    display: block;
+    background: orange;
+    border-color: orange;
+  }
+
+  .btn-0-state:hover {
+    background: yellow;
+    border-color: yellow;
+  }
+
+  .btn-0-state:focus {
+    background: orange;
+    border-color: orange;
+  }
+
+  .btn-1-state {
+    display: block;
+    background: green;
+    border-color: green;
+  }
+
+  .btn-1-state:hover {
+    background: greenyellow;
+    border-color: greenyellow;
+  }
+
+  .btn-1-state:focus {
+    background: green;
+    border-color: green;
+  }
+
+  .btn-2-state {
+    display: block;
+    background: darkred;
+    border-color: darkred;
+  }
+
+  .btn-2-state:hover {
+    background: red;
+    border-color: red;
+  }
+
+  .btn-2-state:focus {
+    background: darkred;
+    border-color: darkred;
+  }
 
   .toast {
     text-align: left;
@@ -286,14 +385,17 @@
   }
 
   .order-title {
+    font-weight: 700;
     padding-top: 10px;
   }
 
   .order-time {
+    font-weight: 300;
     font-size: 12px;
   }
 
   .user-name {
+    font-weight: 400;
     padding-bottom: 10px;
   }
 
