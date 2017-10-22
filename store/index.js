@@ -8,7 +8,8 @@ const store = () => new Vuex.Store({
   state: {
     hash: '',
     query: {},
-    items: []
+    items: [],
+    settings: {}
   },
 
   mutations: {
