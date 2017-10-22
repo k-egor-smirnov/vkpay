@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>VK App</title>
+	<script src="https://vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
+  <style type="text/css">
+    body{
+      background:#edeef0;
+      color:#000;
+      margin:0;
+      padding:0;
+      direction:ltr;
+      font-size:13px;
+      font-family:-apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+      line-height:1.154;
+      font-weight:400;
+      -webkit-font-smoothing:subpixel-antialiased;
+      -moz-osx-font-smoothing:auto
+    }
+
+    .loading {
+      width:22px;
+      height:22px;
+    }
+
+    .center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    button {
+      padding: 7px 16px 8px;
+      margin: 0;
+      font-size: 12.5px;
+      display: inline-block;
+      zoom: 1;
+      cursor: pointer;
+      white-space: nowrap;
+      outline: none;
+      font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+      vertical-align: top;
+      line-height: 15px;
+      text-align: center;
+      text-decoration: none;
+      background: none;
+      background-color: #5e81a8;
+      color: #fff;
+      border: 0;
+      border-radius: 2px;
+      box-sizing: border-box;
+    }
+
+    input {
+      background: none;
+      padding: 8px 70px 8px 12px;
+      height: 34px;
+      border: 0;
+    }
+  </style>
+</head>
+<script type="text/javascript">
+    var app = {
+    	user_id: <%= user_id %>,
+    	group_id: <%= group_id %>,
+    	auth_key: '<%= auth_key %>',
+    	access_token: '<%= access_token %>'
+    }
+</script>
+<body>
+<div id="content" style="width:100%;height:100%;"></div>
+</body>
+<script type="text/javascript"> 
+  function ge(el) {
+    return (typeof el == 'string' || typeof el == 'number') ? document.getElementById(el) : el;
+  }
+  VK.init(function() {
+    VK.addCallback('onGroupSettingsChanged', function(mask, groups_token) {
+      ge('content').innerHTML = '<img src="https://vk.com/images/c_upload_2x.gif" class="loading"/>';
+    	app.access_token = groups_token;
+  	    ajax('/api/admin/token', {access_token: groups_token}, () => {
+          setServer();
+          pageOpen('done');
+        });
+    });
+    if (!app.access_token) { 
+      pageOpen('start');
+    } else {
+    	pageOpen('done');
+    }
+  }, function() { 
+    location.href = '/';
+  }, '5.68');
+  function ajax(path, params, callback) {
+  	callback =  callback || Function()
+  	if (!params) {
+  		params = {};
+  	}
+  	params.auth_key = app.auth_key;
+  	params.viewer_id = app.user_id;
+  	params.group_id = app.group_id;
+  	params.access_token = app.access_token;
+  	var xhr = new XMLHttpRequest();
+  	xhr.open('POST', path, true);
+  	xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+  	xhr.onreadystatechange = function() {
+  		if (xhr.readyState != 4) return;
+  		if (xhr.status != 200) {
+            // alert(xhr.status + ': ' + xhr.statusText);
+        } else {
+        	try {
+            callback(JSON.parse(xhr.responseText))
+          } catch(e) {
+            callback(xhr.responseText)
+          }
+        }
+    }
+  	xhr.send(JSON.stringify(params));
+  }
+
+  function setServer() {
+  	ajax('/api/admin/vk_callback')
+  }
+
+  function pageOpen(type, params) {
+     /* if (type == 'done') {
+      ajax('/api/admin/get_orders', {count: 100}, (orders) => {
+          if (orders && orders.response) {
+            var html = '';
+            var user;
+            var ids = [];
+            for(var i = 0; i < orders.response.length; i++) {
+              user = orders.response[i]
+              ids.push(user.id)
+              html += '<div><img id="user_photo' + user.id + '"/><div id="user_name' + user.id + '">user name loading....</div></div>';
+            }
+            ge('content').innerHTML = html;
+            VK.api('users.get', {user_ids: ids, fields: 'photo_100'}, (data) => {
+              console.log(data)
+            })
+          }
+      });
+      return
+    }  */
+    if (type == 'done') {
+      return location.href = 'https://vkpayoff.ru/main' + location.search
+      VK.api('users.get', {field_ids: 'photo_50'}, (data) => {
+        alert(data.response[0].first_name)
+      })
+    }
+    params = params || {};
+    ge('content').innerHTML = '<img src="https://vk.com/images/c_upload_2x.gif" class="loading"/>';
+    ajax('/api/pages/' + type, params, (html) => {
+      ge('content').innerHTML = html;
+    });
+  }
+</script>
+</html>

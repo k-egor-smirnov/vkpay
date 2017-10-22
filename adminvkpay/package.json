@@ -1,0 +1,24 @@
+{
+  "name": "vkpay",
+  "version": "1.0.0",
+  "description": "App for VK",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-vue": "^4.0.13",
+    "md5": "^2.2.1",
+    "pg": "^7.3.0",
+    "qr-image": "^3.2.0",
+    "request": "^2.83.0",
+    "sha256": "^0.2.0",
+    "tiny_request": "^1.0.13"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nuxt"
+  },
+  "author": "",
+  "license": "ISC"
+}
