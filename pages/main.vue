@@ -60,8 +60,8 @@
                     style="background-color: #5755d9;"></figure>
             <div class="content">
               <div class="order-title">{{ item.user_id }} </div>
-              <div class="order-time">29 апреля 2017 в 20:16</div>
-              <div class="user-name">Иван пиздорванa</div>
+              <div class="order-time">{{ item.time }}</div>
+              <div class="user-name">{{ item.user.first_name }} {{ item.user.last_name }}</div>
             </div>
           </div>
         </li>
@@ -152,7 +152,13 @@
         })
 
         this.$store.state.items = data.response
-//        return data.response
+
+        for (let i in data.response) {
+          var t = new Date(data.response[i].order_time);
+          var formatted = t.format("dd.mm.yyyy hh:MM:ss");
+        }
+
+        console.log(data.response)
       },
       async getSettings() {
         let {data} = await axios.post('https://vkpayoff.ru/api/admin/get_settings', {
@@ -200,7 +206,8 @@
     head() {
       return {
         script: [
-          {type: 'text/javascript', src: 'https://vk.com/js/api/xd_connection.js', async: false, body: false}
+          {type: 'text/javascript', src: 'https://vk.com/js/api/xd_connection.js', async: false, body: false},
+          {type: 'text/javascript', src: 'https://momentjs.com/downloads/moment.js', async: false, body: false}
         ]
       }
     }
